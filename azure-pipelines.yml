@@ -23,25 +23,13 @@ steps:
     version: 3.0.x
     performMultiLevelLookup: true
 
-# do this before your build tasks
 steps:
 - task: DotNetCoreCLI@2
-  displayName: Restore
+  displayName: Build
   inputs:
-    command: restore
+    command: build
     projects: '**/*.csproj'
-    feedsToUse: config
-    nugetConfigPath: NuGet.config    # Relative to root of the repository
-    externalFeedCredentials: <Name of the NuGet service connection>
-# ...
-
-steps:
-- task: DotNetCoreCLI@2
-  displayName: 'Install dotnetsay'
-  inputs:
-    command: custom
-    custom: tool
-    arguments: 'install -g dotnetsay'
+    arguments: '--configuration Release' # Update this to match your need
     
     steps:
 # ...
@@ -52,15 +40,6 @@ steps:
     projects: '**/*Tests/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
     
-    steps:
-# ...
-# do this after your tests have run
-- script: dotnet test <test-project> --logger trx
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
     
     - task: DotNetCoreCLI@2
   inputs:
