@@ -1,16 +1,13 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
 trigger:
 - master
 
 pool:
-  vmImage: 'Ubuntu-16.04'
+  vmImage: 'ubuntu-16.04' # examples of other options: 'macOS-10.14', 'vs2017-win2016'
 
 variables:
-  imageName: 'pipelines-javascript-docker'
-
-steps:
-- task: Docker@2
-  displayName: Build an image
-  inputs:
-    repository: $(imageName)
-    command: build
-    Dockerfile: app/Dockerfile
+  buildConfiguration: 'Release'
