@@ -16,43 +16,43 @@ steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
   
+
 # do this before your build tasks
+  steps:
+   - task: DotNetCoreCLI@2
+     displayName: Restore
+     inputs:
+     command: restore
+     projects: '**/*.csproj'
+     feedsToUse: config
+     nugetConfigPath: NuGet.config    # Relative to root of the repository
+     externalFeedCredentials: <Name of the NuGet service connection>
+     # ...
 
-steps:
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: '**/*.csproj'
-    feedsToUse: config
-    nugetConfigPath: NuGet.config    # Relative to root of the repository
-    externalFeedCredentials: <Name of the NuGet service connection>
-    # ...
-
-steps:
-- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    command: build
-    projects: '**/*.csproj'
-    arguments: '--configuration Release' # Update this to match your need
+  steps:
+   - task: DotNetCoreCLI@2
+   displayName: Build
+   inputs:
+   command: build
+   projects: '**/*.csproj'
+   arguments: '--configuration Release' # Update this to match your need
     
-    steps:
-# ...
-# do this after other tasks such as building
-- task: DotNetCoreCLI@2
-  inputs:
-    command: apt install -y
-    projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+  steps:
+    # ...
+    # do this after other tasks such as building
+    - task: DotNetCoreCLI@2
+      inputs:
+      command: apt install -y
+      projects: '**/*Tests/*.csproj'
+      arguments: '--configuration $(buildConfiguration)'
     
     
     - task: DotNetCoreCLI@2
-  inputs:
-    command: test
-    projects: Refit.Tests/Refit.Tests.csproj
-    arguments: -c $(BuildConfiguration) --settings $(System.DefaultWorkingDirectory)/CodeCoverage.runsettings --collect:"XPlat Code Coverage" -- RunConfiguration.DisableAppDomain=true
-  displayName: Run Tests
+        inputs:
+        command: test
+        projects: Refit.Tests/Refit.Tests.csproj
+        arguments: -c $(BuildConfiguration) --settings $(System.DefaultWorkingDirectory)/CodeCoverage.runsettings --collect:"XPlat Code Coverage" -- RunConfiguration.DisableAppDomain=true
+        displayName: Run Tests
 
 - task: DotNetCoreCLI@2
   inputs:
