@@ -15,7 +15,18 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
-
+  
+# do this before your build tasks
+steps:
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: '**/*.csproj'
+    feedsToUse: config
+    nugetConfigPath: NuGet.config    # Relative to root of the repository
+    externalFeedCredentials: <Name of the NuGet service connection>
+# ...
 
 steps:
 - task: DotNetCoreCLI@2
@@ -30,7 +41,7 @@ steps:
 # do this after other tasks such as building
 - task: DotNetCoreCLI@2
   inputs:
-    command: test
+    command: apt install -y
     projects: '**/*Tests/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
     
@@ -44,7 +55,7 @@ steps:
 
 - task: DotNetCoreCLI@2
   inputs:
-    command: custom
+    command: custom 
     custom: tool
     arguments: install --tool-path . dotnet-reportgenerator-globaltool
   displayName: Install ReportGenerator tool
