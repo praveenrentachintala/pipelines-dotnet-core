@@ -17,6 +17,7 @@ steps:
   displayName: 'dotnet build $(buildConfiguration)'
   
 # do this before your build tasks
+
 steps:
 - task: DotNetCoreCLI@2
   displayName: Restore
@@ -26,7 +27,7 @@ steps:
     feedsToUse: config
     nugetConfigPath: NuGet.config    # Relative to root of the repository
     externalFeedCredentials: <Name of the NuGet service connection>
-# ...
+    # ...
 
 steps:
 - task: DotNetCoreCLI@2
